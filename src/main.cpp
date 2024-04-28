@@ -20,9 +20,9 @@ void handleRoot() {
   //digitalWrite(led, 1);
   server.send(200, "text/plain", "hello from esp8266!");
   //digitalWrite(led, 0);
-  servo.write(10);
+  servo.write(0);
   delay(1000);
-  servo.write(160);
+  servo.write(170);
 }
 
 void handleNotFound(){
@@ -46,20 +46,37 @@ void setup() {
   Serial.begin(9600);
 
   servo.attach(SERVO_PIN);
+  servo.write(170);
+
   pinMode(0, OUTPUT);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  Serial.println("");
-// Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+
+  if (false)
+  {
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    Serial.println("");
+  // Wait for connection
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("");
+    Serial.print("Connected to ");
+    Serial.println(ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    // AP station
+
+    // Connect to Wi-Fi network with SSID and password
+    Serial.print("Setting AP (Access Point)…");
+    // Remove the password parameter, if you want the AP (Access Point) to be open
+    WiFi.softAP(ssid, password);
+
+    IPAddress IP = WiFi.softAPIP();
+    Serial.print("AP IP address: ");
+    Serial.println(IP);
   }
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
 
   if (MDNS.begin("esp8266")) {
     Serial.println("MDNS responder started");
